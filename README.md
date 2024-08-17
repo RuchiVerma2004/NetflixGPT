@@ -19,3 +19,7 @@
     - Search Bar
     - Movie Suggestion
         # NetflixGPT
+
+
+
+- For big Forms Use Libraries eg: formik
