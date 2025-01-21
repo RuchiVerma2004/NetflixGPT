@@ -1,14 +1,44 @@
+import {LOGO} from '../utils/constants';
+import {USER_AVATAR} from '../utils/constants';
+import { signOut } from "firebase/auth";
+import { auth } from "../utils/firebase";
+import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 const Heading = ()=>{
+
+    const navigate = useNavigate();
+    const user = useSelector((store)=>store.user);
+
+    const handleSignOut = () => {    
+            signOut(auth)
+              .then(() => {
+                navigate("/");
+              })
+              .catch((error) => {
+                navigate("/error");
+              });
+        };
+
     return (
-        <div className="absolute px-8 py-2 bg-gradient-to-br from-black  z-10 w-full h-full">
+
+
+        <div className="absolute px-8 py-2 bg-gradient-to-b from-black  z-10 w-screen flex justify-between">
           
             {/* <h1 className="text-3xl font-bold font-mono text-red-600">STREAMX</h1> */}
         
             <img 
-                src="https://help.nflxext.com/helpcenter/OneTrust/oneTrust_production/consent/87b6a5c0-0104-4e96-a291-092c11350111/01938dc4-59b3-7bbc-b635-c4131030e85f/logos/dd6b162f-1a32-456a-9cfe-897231c7763c/4345ea78-053c-46d2-b11e-09adaef973dc/Netflix_Logo_PMS.png" 
+                src={LOGO} 
                 alt="Netflix Logo" 
                 className="w-40 "
             />
+           {user && (<div className=" flex p-2 items-center">
+                <img 
+                    src={user.photoURL} 
+                    alt="User Avatar" 
+                    className="w-10 h-10 "
+                />
+                <button onClick={handleSignOut} className='p-4 font-semibold text-white'>Sign Out</button>
+            </div>)}
         </div>
     );
 };
