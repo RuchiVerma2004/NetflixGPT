@@ -1,46 +1,62 @@
-import {LOGO} from '../utils/constants';
-import {USER_AVATAR} from '../utils/constants';
-import { signOut } from "firebase/auth";
-import { auth } from "../utils/firebase";
+import { onAuthStateChanged, signOut } from "firebase/auth";
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
-const Heading = ()=>{
+import { LOGO } from "../utils/constants";
+import { auth } from "../utils/firebase";
+import { addUser, removeUser } from "../utils/userSlice";
 
-    const navigate = useNavigate();
-    const user = useSelector((store)=>store.user);
+const Header = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const user = useSelector((store) => store.user);
 
-    const handleSignOut = () => {    
-            signOut(auth)
-              .then(() => {
-                navigate("/");
-              })
-              .catch((error) => {
-                navigate("/error");
-              });
-        };
+  const handleSignOut = () => {
+    signOut(auth)
+      .then(() => {})
+      .catch((error) => {
+        navigate("/error");
+      });
+  };
 
-    return (
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        const { uid, email, displayName, photoURL } = user;
+        dispatch(
+          addUser({
+            uid: uid,
+            email: email,
+            displayName: displayName,
+            photoURL: photoURL,
+          })
+        );
+        navigate("/browse");
+      } else {
+        dispatch(removeUser());
+        navigate("/");
+      }
+    });
 
+    return () => unsubscribe();
+  }, []);
 
-        <div className="absolute px-8 py-2 bg-gradient-to-b from-black  z-10 w-screen flex justify-between">
-          
-            {/* <h1 className="text-3xl font-bold font-mono text-red-600">STREAMX</h1> */}
-        
-            <img 
-                src={LOGO} 
-                alt="Netflix Logo" 
-                className="w-40 "
-            />
-           {user && (<div className=" flex p-2 items-center">
-                <img 
-                    src={user.photoURL} 
-                    alt="User Avatar" 
-                    className="w-10 h-10 "
-                />
-                <button onClick={handleSignOut} className='p-4 font-semibold text-white'>Sign Out</button>
-            </div>)}
+  return (
+    <div className="absolute w-screen px-8 py-2 bg-gradient-to-b from-black z-10 flex flex-col md:flex-row justify-between">
+      <img className="w-44 mx-auto md:mx-0" src={LOGO} alt="logo" />
+      {user && (
+        <div className="flex justify-center items-center">
+          <img
+            className="hidden md:block w-10 h-10 m-2"
+            alt="usericon"
+            src={user?.photoURL}
+          />
+          <button onClick={handleSignOut} className="font-bold text-white ">
+            Sign Out
+          </button>
         </div>
-    );
+      )}
+    </div>
+  );
 };
-
-export default Heading;
+export default Header;
