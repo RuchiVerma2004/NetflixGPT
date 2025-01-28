@@ -1,5 +1,7 @@
 import Login from "./Login";
 import Browser from "./Browse";
+
+
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
 const Body = () => {
@@ -12,6 +14,7 @@ const Body = () => {
       path: "/Browse",
       element: <Browser />,
     },
+    
   ]);
 
   return (
