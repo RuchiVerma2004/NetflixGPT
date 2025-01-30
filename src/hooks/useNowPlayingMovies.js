@@ -7,6 +7,10 @@ const useNowPlayingMovies = () => {
   // Fetch Data from TMDB API and update store
   const dispatch = useDispatch();
 
+  const now_playingMovies = useSelector(store => store.movies.nowPlayingMovies)
+
+
+
   const nowPlayingMovies = useSelector(
     (store) => store.movies.nowPlayingMovies
   );
@@ -21,7 +25,9 @@ const useNowPlayingMovies = () => {
   };
 
   useEffect(() => {
-    !nowPlayingMovies && getNowPlayingMovies();
+
+      !nowPlayingMovies && getNowPlayingMovies();
+   
   }, []);
 };
 
