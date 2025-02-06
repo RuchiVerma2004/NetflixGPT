@@ -12,7 +12,7 @@ const Browser = () => {
   usePopularMovies();
 
   return (
-    <div>
+    <div className="">
       <Header />
       {
         showGptSearch ? (
